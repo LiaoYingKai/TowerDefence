@@ -2,6 +2,8 @@ import Phaser from 'phaser'
 import Map from './Map.js'
 import Enemy from './Enemy'
 import Turret from './Turret'
+import Bullet from './Bullet'
+
 
 const config = {
   type: Phaser.AUTO,
@@ -21,6 +23,7 @@ const config = {
 const game = new Phaser.Game(config)
 var enemies
 var turrets
+var bullets
 
 function preload() {
   this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json')
@@ -33,11 +36,16 @@ function create() {
   var myMap = new Map(path, graphics)
   var enemy_speed = 1 / 10000
   var myEnemy = new Phaser.Class(Enemy(path, enemy_speed))
-  var myTurret = new Phaser.Class(Turret())
   enemies = this.physics.add.group({
     classType: myEnemy,
     runChildUpdate: true,
   });
+  var myBullet = new Phaser.Class(Bullet())
+  bullets = this.physics.add.group({
+    classType: myBullet,
+    runChildUpdate: true
+  })
+  var myTurret = new Phaser.Class(Turret(enemies, bullets))
   turrets = this.add.group({
     classType: myTurret,
     runChildUpdate: true,
@@ -48,6 +56,16 @@ function create() {
   this.input.on('pointerdown', function(pointer) {
     myMap.placeTurret(pointer, turrets)
   })
+  this.physics.add.overlap(enemies, bullets, damageEnemy)
+
+}
+
+function damageEnemy(enemy, bullet) {
+  if (enemy.active === true && bullet.active === true) {
+    bullet.setActive(false)
+    bullet.setVisible(false)
+    enemy.receiveDamage(50)
+  }
 }
 
 function update(time, delta) {
