@@ -1,8 +1,8 @@
-var ENEMY_SPEED = 1 / 1000
-export default function Enemy(path) {
+export default function Enemy(path, enemy_speed) {
   return {
     Extends: Phaser.GameObjects.Image,
     initialize: function Enemy(scene) {
+      console.log('Enemy:initialize')
       Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'enemy')
       this.follower = {
         t: 0,
@@ -24,7 +24,7 @@ export default function Enemy(path) {
       }
     },
     update: function(time, delta) {
-      this.follower.t += ENEMY_SPEED * delta;
+      this.follower.t += enemy_speed * delta;
       path.getPoint(this.follower.t, this.follower.vec);
       this.setPosition(this.follower.vec.x, this.follower.vec.y);
       if (this.follower.t >= 1) {
@@ -34,4 +34,3 @@ export default function Enemy(path) {
     }
   }
 }
-// export default Enemy

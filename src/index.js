@@ -1,6 +1,8 @@
 import Phaser from 'phaser'
 import Map from './Map.js'
 import Enemy from './Enemy'
+import Turret from './Turret'
+
 const config = {
   type: Phaser.AUTO,
   width: 640,
@@ -18,6 +20,7 @@ const config = {
 }
 const game = new Phaser.Game(config)
 var enemies
+var turrets
 
 function preload() {
   this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json')
@@ -28,13 +31,23 @@ function create() {
   var path = this.add.path(96, -32)
   var graphics = this.add.graphics();
   var myMap = new Map(path, graphics)
-  var myEnemy = new Phaser.Class(Enemy(path))
+  var enemy_speed = 1 / 10000
+  var myEnemy = new Phaser.Class(Enemy(path, enemy_speed))
+  var myTurret = new Phaser.Class(Turret())
   enemies = this.physics.add.group({
     classType: myEnemy,
     runChildUpdate: true,
   });
-  console.log(enemies)
+  turrets = this.add.group({
+    classType: myTurret,
+    runChildUpdate: true,
+  });
+
+  // console.log(turrets)
   this.nextEnemy = 0
+  this.input.on('pointerdown', function(pointer) {
+    myMap.placeTurret(pointer, turrets)
+  })
 }
 
 function update(time, delta) {

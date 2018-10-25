@@ -1,3 +1,14 @@
+var map = [
+  [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, -1, 0, 0]
+];
+
 export default class Map {
   constructor(path, graphics) {
     this.path = path
@@ -31,5 +42,17 @@ export default class Map {
       graphics.lineTo(j * 64, 512)
     }
     graphics.strokePath()
+  }
+  placeTurret(pointer, turrets) {
+    var i = Math.floor(pointer.y / 64)
+    var j = Math.floor(pointer.x / 64)
+    if (map[i][j] === 0) {
+      var turret = turrets.get()
+      if (turret) {
+        turret.setActive(true);
+        turret.setVisible(true);
+        turret.place(i, j)
+      }
+    }
   }
 }
