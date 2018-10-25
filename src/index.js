@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import Map from './Map.js'
+import Enemy from './Enemy'
 const config = {
   type: Phaser.AUTO,
   width: 640,
@@ -16,6 +17,7 @@ const config = {
   }
 }
 const game = new Phaser.Game(config)
+var enemies
 
 function preload() {
   this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json')
@@ -23,12 +25,28 @@ function preload() {
 }
 
 function create() {
-  var path = this.add.path(0, 0)
+  var path = this.add.path(96, -32)
   var graphics = this.add.graphics();
-  var map = new Map(path, graphics)
-
+  var myMap = new Map(path, graphics)
+  var myEnemy = new Phaser.Class(Enemy(path))
+  enemies = this.physics.add.group({
+    classType: myEnemy,
+    runChildUpdate: true,
+  });
+  console.log(enemies)
+  this.nextEnemy = 0
 }
 
-function update() {
-
+function update(time, delta) {
+  if (time > this.nextEnemy) {
+    //取得敵人的物件
+    var enemy = enemies.get();
+    if (enemy) {
+      enemy.setActive(true);
+      enemy.setVisible(true);
+      enemy.startOnPath();
+      //每一個球間隔的時間
+      this.nextEnemy = time + 2000;
+    }
+  }
 }
