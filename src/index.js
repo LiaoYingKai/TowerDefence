@@ -4,7 +4,6 @@ import Enemy from './Enemy'
 import Turret from './Turret'
 import Bullet from './Bullet'
 
-
 const config = {
   type: Phaser.AUTO,
   width: 640,
@@ -24,6 +23,8 @@ const game = new Phaser.Game(config)
 var enemies
 var turrets
 var bullets
+var money = 100
+var moneyText
 
 function preload() {
   this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json')
@@ -31,36 +32,42 @@ function preload() {
 }
 
 function create() {
+  moneyText = this.add.text(540, 16, '$100', {
+    fontSize: '32px',
+    fill: '#fff'
+  })
   var path = this.add.path(96, -32)
   var graphics = this.add.graphics();
   var myMap = new Map(path, graphics)
-  var enemy_speed = 1 / 10000
-  var myEnemy = new Phaser.Class(Enemy(path, enemy_speed))
+  var enemySpeed = 1 / 10000
+  //線、速度(越大越快)、血量
+  var myEnemy = new Phaser.Class(Enemy(path, 1 / 10000, 200))
   enemies = this.physics.add.group({
     classType: myEnemy,
     runChildUpdate: true,
   });
-  var myBullet = new Phaser.Class(Bullet())
+  //子彈速度、飛行時間
+  var myBullet = new Phaser.Class(Bullet(600, 500))
   bullets = this.physics.add.group({
     classType: myBullet,
     runChildUpdate: true
   })
-  var myTurret = new Phaser.Class(Turret(enemies, bullets))
+  //敵人、攻擊半徑、子彈、發射間距、攻擊力
+  var myTurret = new Phaser.Class(Turret(enemies, 400, bullets, 1000, 50))
   turrets = this.add.group({
     classType: myTurret,
     runChildUpdate: true,
   });
-
-  // console.log(turrets)
+  var gameThis = this
   this.nextEnemy = 0
-  this.input.on('pointerdown', function(pointer) {
+  this.input.on('pointerdown', pointer => {
     myMap.placeTurret(pointer, turrets)
   })
   this.physics.add.overlap(enemies, bullets, damageEnemy)
-
 }
 
 function damageEnemy(enemy, bullet) {
+  // console.log('fuck')
   if (enemy.active === true && bullet.active === true) {
     bullet.setActive(false)
     bullet.setVisible(false)
@@ -69,6 +76,7 @@ function damageEnemy(enemy, bullet) {
 }
 
 function update(time, delta) {
+
   if (time > this.nextEnemy) {
     //取得敵人的物件
     var enemy = enemies.get();

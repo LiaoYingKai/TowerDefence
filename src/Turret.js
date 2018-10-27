@@ -1,4 +1,4 @@
-export default function Turret(enemies, bullets) {
+export default function Turret(enemies, attackDistance, bullets, shootingSpeed, bulletAttack) {
   return {
     Extends: Phaser.GameObjects.Image,
     initialize: function Turret(scene) {
@@ -9,10 +9,11 @@ export default function Turret(enemies, bullets) {
     place: function(i, j) {
       this.y = i * 64 + 64 / 2
       this.x = j * 64 + 64 / 2
+      map[i][j] = 1
     },
     fire: function() {
       //偵測敵人是否到半徑的範圍(第三個參數)
-      var enemy = this.getEnemy(this.x, this.y, 500)
+      var enemy = this.getEnemy(this.x, this.y, attackDistance)
       if (enemy) {
         var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y)
         this.addBullet(this.x, this.y, angle)
@@ -34,10 +35,13 @@ export default function Turret(enemies, bullets) {
         bullet.fire(x, y, angle)
       }
     },
+    test: function() {
+      console.log('fuck')
+    },
     update: function(time, delta) {
       if (time > this.nextTic) {
         this.fire()
-        this.nextTic = time + 100
+        this.nextTic = time + shootingSpeed
       }
     }
   }

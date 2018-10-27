@@ -1,4 +1,4 @@
-export default function Bullet() {
+export default function Bullet(bulletSpeed, bulletFirghtTime) {
   return {
     Extends: Phaser.GameObjects.Image,
     initialize: function bullet(scene) {
@@ -7,7 +7,7 @@ export default function Bullet() {
       this.dy = 0
       this.lifespan = 0
       //子彈速度
-      this.speed = Phaser.Math.GetSpeed(1000, 1)
+      this.speed = Phaser.Math.GetSpeed(bulletSpeed, 1)
     },
     fire: function(x, y, angle) {
       this.setActive(true)
@@ -18,7 +18,7 @@ export default function Bullet() {
       this.dy = Math.sin(angle)
 
       //子彈存活的秒數(毫秒)
-      this.lifespan = 1000
+      this.lifespan = bulletFirghtTime
     },
     update: function(time, delta) {
       this.lifespan -= delta
