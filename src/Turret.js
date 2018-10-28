@@ -1,10 +1,17 @@
-export default function Turret(enemies, attackDistance, bullets, shootingSpeed, bulletAttack) {
+import Bullet from './Bullet'
+
+export default function Turret(enemies, attackDistance, shootingSpeed, bulletSpeed, bulletSurviveTime, bulletInjury, physics) {
   return {
     Extends: Phaser.GameObjects.Image,
     initialize: function Turret(scene) {
       Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'turret')
       this.nextTic = 0
-
+      this.myBullet = new Phaser.Class(Bullet(bulletSpeed, bulletSurviveTime))
+      this.bullets = physics.add.group({
+        classType: this.myBullet,
+        runChildUpdate: true
+      })
+      physics.add.overlap(enemies, this.bullets, this.damageEnemy)
     },
     place: function(i, j) {
       this.y = i * 64 + 64 / 2
@@ -28,8 +35,15 @@ export default function Turret(enemies, attackDistance, bullets, shootingSpeed, 
       }
       return false
     },
+    damageEnemy: function(enemy, bullet) {
+      if (enemy.active === true && bullet.active === true) {
+        bullet.setActive(false)
+        bullet.setVisible(false)
+        enemy.receiveDamage(bulletInjury)
+      }
+    },
     addBullet: function(x, y, angle) {
-      var bullet = bullets.get()
+      var bullet = this.bullets.get()
       if (bullet) {
         bullet.fire(x, y, angle)
       }

@@ -3,7 +3,6 @@ import Map from './Map.js'
 import Enemy from './Enemy'
 import Turret from './Turret'
 import Bullet from './Bullet'
-import Money from './Money'
 
 const config = {
   type: Phaser.AUTO,
@@ -22,6 +21,7 @@ const config = {
 }
 const game = new Phaser.Game(config)
 var enemies
+var nextEmeny = 2000
 var turrets
 var bullets
 
@@ -31,56 +31,44 @@ function preload() {
 }
 
 function create() {
-  var path = this.add.path(96, -32)
-  var graphics = this.add.graphics();
-  var myMap = new Map(path, graphics)
-  var enemySpeed = 1 / 10000
+  let path = this.add.path(96, -32)
+  let graphics = this.add.graphics();
+  let myMap = new Map(path, graphics)
+  let enemySpeed = 1 / 10000
+  let enemyHp = 200
   //線、速度(越大越快)、血量
-  var myEnemy = new Phaser.Class(Enemy(path, 1 / 10000, 200))
+  let myEnemy = new Phaser.Class(Enemy(path, enemySpeed, enemyHp))
   enemies = this.physics.add.group({
     classType: myEnemy,
     runChildUpdate: true,
   });
-  //子彈速度、飛行時間
-  var myBullet = new Phaser.Class(Bullet(600, 500))
-  bullets = this.physics.add.group({
-    classType: myBullet,
-    runChildUpdate: true
-  })
-  //敵人、攻擊半徑、子彈、發射間距、攻擊力
-  var myTurret = new Phaser.Class(Turret(enemies, 400, bullets, 1000, 50))
+  let bulletSpeed = 600
+  let bulletSurviveTime = 500
+  let bulletInjury = 50
+  let turretAttackDistance = 400
+  let turretShootingSpeed = 1000
+  //敵人、攻擊半徑、子彈、發射間距、子彈速度、飛行時間、子彈攻擊力、物理引擎
+  let myTurret = new Phaser.Class(Turret(enemies, turretAttackDistance, turretShootingSpeed, bulletSpeed, bulletSurviveTime, bulletInjury, this.physics))
   turrets = this.add.group({
     classType: myTurret,
     runChildUpdate: true,
   });
-  var gameThis = this
   this.nextEnemy = 0
   this.input.on('pointerdown', pointer => {
     myMap.placeTurret(pointer, turrets)
   })
-  this.physics.add.overlap(enemies, bullets, damageEnemy)
-}
-
-function damageEnemy(enemy, bullet) {
-  // console.log('fuck')
-  if (enemy.active === true && bullet.active === true) {
-    bullet.setActive(false)
-    bullet.setVisible(false)
-    enemy.receiveDamage(50)
-  }
 }
 
 function update(time, delta) {
-
   if (time > this.nextEnemy) {
     //取得敵人的物件
-    var enemy = enemies.get();
+    let enemy = enemies.get();
     if (enemy) {
       enemy.setActive(true);
       enemy.setVisible(true);
       enemy.startOnPath();
-      //每一個球間隔的時間
-      this.nextEnemy = time + 2000;
+      //每一個敵人間隔的時間
+      this.nextEnemy = time + nextEmeny;
     }
   }
 }
