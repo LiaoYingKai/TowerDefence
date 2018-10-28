@@ -5,6 +5,7 @@ export default function Turret(enemies, attackDistance, shootingSpeed, bulletSpe
     Extends: Phaser.GameObjects.Image,
     initialize: function Turret(scene) {
       Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'turret')
+      // Phaser.GameObjects.Image.call(this, scene, 0, 0, 'fuckTurret')
       this.nextTic = 0
       this.myBullet = new Phaser.Class(Bullet(bulletSpeed, bulletSurviveTime))
       this.bullets = physics.add.group({

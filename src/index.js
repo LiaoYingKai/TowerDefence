@@ -28,6 +28,7 @@ var bullets
 function preload() {
   this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json')
   this.load.image('bullet', 'assets/bullet.png')
+  this.load.image('fuckTurret', 'assets/fuckTurret.png')
 }
 
 function create() {
