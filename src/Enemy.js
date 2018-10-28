@@ -2,7 +2,6 @@ export default function Enemy(path, enemySpeed, enemyHp) {
   return {
     Extends: Phaser.GameObjects.Image,
     initialize: function Enemy(scene) {
-      console.log('Enemy:initialize')
       Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'enemy')
       this.follower = {
         t: 0,

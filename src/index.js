@@ -3,6 +3,7 @@ import Map from './Map.js'
 import Enemy from './Enemy'
 import Turret from './Turret'
 import Bullet from './Bullet'
+import Money from './Money'
 
 const config = {
   type: Phaser.AUTO,
@@ -23,8 +24,6 @@ const game = new Phaser.Game(config)
 var enemies
 var turrets
 var bullets
-var money = 100
-var moneyText
 
 function preload() {
   this.load.atlas('sprites', 'assets/spritesheet.png', 'assets/spritesheet.json')
@@ -32,10 +31,6 @@ function preload() {
 }
 
 function create() {
-  moneyText = this.add.text(540, 16, '$100', {
-    fontSize: '32px',
-    fill: '#fff'
-  })
   var path = this.add.path(96, -32)
   var graphics = this.add.graphics();
   var myMap = new Map(path, graphics)

@@ -52,6 +52,7 @@ export default class Map {
         turret.setActive(true);
         turret.setVisible(true);
         turret.place(i, j)
+        map[i][j] = 1
       }
     }
   }
