@@ -1,4 +1,4 @@
-export default function Enemy(path, enemySpeed, enemyHp) {
+export default function Enemy(path, enemySpeed, enemyHp, money) {
   return {
     Extends: Phaser.GameObjects.Image,
     initialize: function Enemy(scene) {
@@ -20,6 +20,7 @@ export default function Enemy(path, enemySpeed, enemyHp) {
       if (this.hp <= 0) {
         this.setActive(false)
         this.setVisible(false)
+        money.earnMoney(10)
       }
     },
     update: function(time, delta) {

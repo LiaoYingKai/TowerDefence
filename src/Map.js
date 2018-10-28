@@ -43,16 +43,17 @@ export default class Map {
     }
     graphics.strokePath()
   }
-  placeTurret(pointer, turrets) {
+  placeTurret(pointer, turrets, money, cost) {
     var i = Math.floor(pointer.y / 64)
     var j = Math.floor(pointer.x / 64)
-    if (map[i][j] === 0) {
+    if (map[i][j] === 0 && money.getMoney() > cost) {
       var turret = turrets.get()
       if (turret) {
         turret.setActive(true);
         turret.setVisible(true);
         turret.place(i, j)
         map[i][j] = 1
+        money.costMoney(cost)
       }
     }
   }
